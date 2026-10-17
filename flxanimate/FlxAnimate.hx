@@ -194,6 +194,12 @@ class FlxAnimate extends FlxSprite
 	 */
 	public override function draw():Void
 	{
+		// Rainy perf: skip the expensive recursive symbol render when this sprite is
+		// off-screen for every camera it draws to. Conservative: never cull while bounds
+		// are uninitialized (width/height == 0) to avoid vanishing on the first frame.
+		if (width > 0 && height > 0 && !isOnAnyCamera())
+			return;
+
 		_matrix.identity();
 		if (flipX)
 		{
@@ -226,6 +232,18 @@ class FlxAnimate extends FlxSprite
 			drawLimb(_pivot, new FlxMatrix(1, 0, 0, 1, origin.x - _pivot.frame.width * 0.5, origin.y - _pivot.frame.height * 0.5), cameras);
 			drawLimb(_indicator, new FlxMatrix(1, 0, 0, 1, -_indicator.frame.width * 0.5, -_indicator.frame.height * 0.5), cameras);
 		}
+	}
+
+	// Rainy perf: true if the sprite's bounding box intersects at least one camera it
+	// renders to. Sprites with a custom `cameras` set are only tested against those;
+	// null `cameras` means it draws to every camera in FlxG.cameras.
+	function isOnAnyCamera():Bool {
+		var targetCams = (cameras != null && cameras.length > 0) ? cameras : FlxG.cameras;
+		for (cam in targetCams) {
+			if (isOnScreen(cam))
+				return true;
+		}
+		return false;
 	}
 
 	var st = 0;
