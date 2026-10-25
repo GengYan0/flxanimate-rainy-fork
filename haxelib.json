@@ -1,11 +1,11 @@
 {
     "name": "flxanimate",
-    "url": "https://github.com/Dot-Stuff/flxanimate/",
+    "url": "https://github.com/GengYan0/flxanimate-rainy-fork",
     "license": "MIT",
     "tags": ["adobe","flash","animate","texture_sheet", "flixel"],
-    "description": "Adobe Animate's texture atlas player for HaxeFlixel.",
+    "description": "Adobe Animate texture atlas player for HaxeFlixel, with off-screen culling.",
     "version": "4.0.0",
-    "releasenote": "Revamp several issues, and introducing filters on MovieClips/layers.",
-    "contributors": ["MrCheemsAndFriends", "DotWith"],
+    "releasenote": "Off-screen culling in draw(); camera list resolved correctly for the default camera set.",
+    "contributors": ["RainyEngine"],
     "dependencies": {}
 }

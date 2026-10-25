@@ -1,83 +1,168 @@
-<p align="center">
-    <img src="./logo.svg" width="500" alt="FlxAnimate's logo, constituting of the HaxeFlixel logo sliced into pieces and then 4 arrows pointing where the parts should be to create a result."/> 
-</p>
+# rainy-flxanimate
 
-# FlxAnimate
+Adobe Animate 导出的纹理图集播放器。读取 `Animation.json`、`TextureAtlas` 图集与 `.zip`
+包，按 Animate 的时间轴结构播放 Symbol 动画，含图层、关键帧、滤镜与按钮元件。
 
-FlxAnimate is an open source plugin focused on parsing spritesheets and implementing Texture Atlases exported by the computer animation program [Adobe Animate](https://www.adobe.com/es/products/animate.html) (formerly known as Adobe Flash) on [HaxeFlixel](https://haxeflixel.com). <a href="https://helpx.adobe.com/animate/using/create-sprite-sheet.html"> <sub>More Information</sub> </a>
+## 能力
 
-It can be useful when you need to export spritesheets that are not supported by the game engine, such as Cocos 2D, Starling, Sparrow v1, among others. Not to mention the possibility to play efficiently Texture Atlases on runtime, while mimicking Animate's structure as much fidelity as possible.
+| 能力 | 入口 |
+|---|---|
+| 加载导出的图集目录 | `new FlxAnimate(x, y, path)` |
+| 加载 zip 包 | `loadAtlas('foo.zip')` |
+| 复用已有的图集与 JSON | `loadSeparateAtlas(json, frames)` |
+| 按 Symbol 播放 | `anim.anim.play('Symbol')` |
+| 按帧标签播放 | `anim.anim.play('label')` |
+| 自定义动画序列 | `addBySymbol` / `addByAnimIndices` / `addByCustomTimeline` |
+| 帧标签回调 | `addCallbackTo(label, fn)` |
+| 按钮元件交互 | `setButtonPack(name, callbacks)` |
+| 图层级滤镜 | `filters` |
+| 屏幕外剔除 | 自动 |
 
-## Questions/Support
+## 安装
 
-In case that you have any questions or problems about the project, you can contact CheemsAndFriends on: 
-
-<div align="center">
-&ensp;<a href="https://discord.com"><img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a69f118df70ad7828d4_icon_clyde_blurple_RGB.svg" width="250px"/></a>
-&emsp;&emsp;&emsp;&emsp;&emsp;<a href="https://twitter.com/CheemsnFriendos/"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg" width="251px"/></a>
-<p>(as <b>cheemsnfriends</b>) &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(as <a href="https://twitter.com/CheemsnFriendos/"><b>@CheemsnFriendos</b><a/>) </p>
-</div>
-
-
-# Limitations
-
-* No support on symbols that require 3D transformation ([See More](https://en.wikipedia.org/wiki/Transformation_matrix#Examples_in_3D_computer_graphics))
-
-## TODO
-
-* Blend mode support for shader based blends.
-* Support on layer masks.
-* A wiki or website API related + samples to tweak on. Something similar as [HaxeFlixel's demos](https://haxeflixel.com/demos) and [HaxeFlixel's API](https://api.haxeflixel.com).
-
-# How to install?
-
-## 1. Haxelib
-
-The Haxe Library Manager (also known as Haxelib) is the manager that lets you use, download and upload libraries that are inside Haxe's ecosystem.
-
-you can download it by typing `haxelib install flxanimate` on your terminal or command prompt.
-
-## 2. Git
-
-Git is an open-sourced version control system designed to handle every type of project in Github, in this case, FlxAnimate. You should check first of all if you have [Git](https://git-scm.com) 
-installed before typing `haxelib git flxanimate https://github.com/Dot-Stuff/flxanimate` on your terminal or command prompt.
-
-# How to use it?
-
-There are two usages that you can apply to FlxAnimate: One is the Texture Atlas export and the Spritesheet export.
-
-## Texture Atlas
-
-**WARNING:** This repository **DOES NOT** transform texture atlases into spritesheets! If you wish to use this, It's better to use [Smokey555's repo](https://github.com/Smokey555/Flixel-TextureAtlas).
-
-In order to use FlxAnimate's texture atlas support, you will need to create a new instance of FlxAnimate, as you would do with FlxSprite.
-
-```haxe
-var character:FlxAnimate = new FlxAnimate(X, Y, "Path/To/Atlas");
-```
-`Path/To/Atlas` has to be from the folder that you exported the atlas texture atlas with, not with any of the contents in there.
-
-Example:
-
-✅ Correct Path:
-```haxe
-var ninja_girl:FlxAnimate = new FlxAnimate(X, Y, "assets/images/ninja-girl");
+```bash
+haxelib dev flxanimate "D:/libs/rainy-flxanimate"
 ```
 
-❎ Incorrect Path:
+或者：
 
-```haxe
-var ninja_girl:FlxAnimate = new FlxAnimate(X, Y, "assets/images/ninja-girl/Animation.json"); // This also applies with spritemaps!
+```bash
+haxelib git flxanimate https://github.com/GengYan0/flxanimate-rainy-fork
 ```
 
-## Spritesheet
+`haxelib` 名仍是 `flxanimate`。
 
-There are several formats that Adobe Animate offers to use for different kinds of uses, but mostly for storing animations without having to do big calculations, unlike Texture Atlases.
-To use a spritesheet with the format that Animate offers, you would need to type the name of the Spritesheet, excluding the version if it has several.
+## 导出的目录结构
 
-For example:
+```
+assets/animate/boyfriend/
+├── Animation.json
+├── TextureAtlas.png
+└── TextureAtlas.json      （或 spritemap1.json + spritemap1.png 多页）
+```
+
+## 播放 Symbol
 
 ```haxe
-    var sprite:FlxSprite = new FlxSprite(X,Y);
-    sprite.frames = FlxAnimateFrames.fromCocos2D(Path);
+var boy = new FlxAnimate(400, 300, 'assets/animate/boyfriend');
+boy.antialiasing = true;
+add(boy);
+
+boy.anim.play('idle');
 ```
+
+`play` 的第二、三个参数是 `force` 与 `reverse`：
+
+```haxe
+boy.anim.play('idle', true);        // 强制从头重播
+boy.anim.play('walk', true, true);  // 倒放
+```
+
+控制：
+
+```haxe
+boy.anim.pause();
+boy.anim.resume();
+boy.anim.stop();
+```
+
+## 帧率与完成回调
+
+构造时传设置：
+
+```haxe
+var boy = new FlxAnimate(400, 300, 'assets/animate/boyfriend', {
+	FrameRate: 30,
+	Reversed: false,
+	OnComplete: function() trace('loop done'),
+	Antialiasing: true
+});
+```
+
+`Settings` 字段：`FrameRate`、`Reversed`、`OnComplete`、`ShowPivot`、`Antialiasing`、
+`ScrollFactor`、`Offset`、`ButtonSettings`。
+
+## 自定义动画序列
+
+不按 Symbol，自行挑帧：
+
+```haxe
+// 按 Symbol 名拼一段
+boy.anim.addBySymbol('walk', 'WalkCycle', 24, true);
+
+// 按帧序号拼一段
+boy.anim.addByAnimIndices('blink', [0, 1, 2, 1, 0], 24);
+
+// 按帧标签拼一段
+boy.anim.addByFrameLabel('wave', 'wave_start', 24, true);
+
+boy.anim.play('walk');
+```
+
+`addBySymbol` 的参数依次是动画名、Symbol 名、帧率（0 表示沿用源帧率）、是否循环、X、Y 偏移。
+
+## 复用图集
+
+多个角色共用同一份图集时，避免重复加载：
+
+```haxe
+var frames = FlxAnimateFrames.fromTextureAtlas('assets/animate/shared');
+var json = Assets.getText('assets/animate/shared/Animation.json');
+
+var a = new FlxAnimate(0, 0);
+a.loadSeparateAtlas(json, frames);
+
+var b = new FlxAnimate(200, 0);
+b.loadSeparateAtlas(json, frames);
+```
+
+`loadSeparateAtlas` 的第一个参数是 JSON **内容**，不是路径。
+
+## 帧标签回调
+
+```haxe
+boy.anim.addCallbackTo('hit', function() {
+	FlxG.camera.shake(0.01, 0.2);
+});
+```
+
+`removeCallbackFrom(label, fn)` 移除。
+
+## 按钮元件
+
+```haxe
+boy.setButtonPack('playButton', {
+	onOver: function() boy.color = 0xFFFFFF,
+	onOut: function() boy.color = 0xAAAAAA,
+	onDown: function() boy.color = 0x666666,
+	onUp: function() trace('clicked')
+});
+```
+
+## 帧标签跳转
+
+```haxe
+boy.anim.goToFrameLabel('checkpoint');
+var next = boy.anim.getNextToFrameLabel('checkpoint');
+```
+
+## 本构建的改动
+
+按屏幕范围剔除。`draw()` 在真正提交前判断精灵是否落在任一目标相机的可见区内，不在就跳过
+整棵时间轴的绘制。`cameras` 有自定义值时只测这些相机，为 `null` 时测全部。
+
+```haxe
+boy.cameras = [FlxG.camera];   // 只对这一台相机做可见性判断
+```
+
+对场景里挂了几十个 Animate 精灵、大部分在画面外的关卡有明显收益。仍在画面内的精灵
+行为不变。
+
+## 边界
+
+- 不支持需要三维变换的 Symbol。三维旋转与透视在二维图集里没有对应表达。
+- 混合模式只覆盖固定管线能做的那些，需要双纹理的模式不做。
+- 图层遮罩不做。
+- 大图集受 GPU 纹理上限约束，单页超过 `GL_MAX_TEXTURE_SIZE` 时会被驱动拒绝。
+
+逐条改动与验证方式记录在 `EXTENDING.md`。

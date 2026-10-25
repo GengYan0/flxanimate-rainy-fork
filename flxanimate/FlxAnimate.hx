@@ -238,7 +238,7 @@ class FlxAnimate extends FlxSprite
 	// renders to. Sprites with a custom `cameras` set are only tested against those;
 	// null `cameras` means it draws to every camera in FlxG.cameras.
 	function isOnAnyCamera():Bool {
-		var targetCams = (cameras != null && cameras.length > 0) ? cameras : FlxG.cameras;
+		var targetCams = (cameras != null && cameras.length > 0) ? cameras : FlxG.cameras.list;
 		for (cam in targetCams) {
 			if (isOnScreen(cam))
 				return true;
