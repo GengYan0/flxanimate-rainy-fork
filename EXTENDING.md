@@ -1,8 +1,8 @@
-# EXTENDING — flxanimate (rainy fork)
+# EXTENDING — rainy-flxanimate
 
-- **Upstream**: Dot-Stuff/flxanimate `dev` branch (vendored @ `768740a`, haxelib 4.0.0)
-- **Type**: pure Haxe (no ndll) → every layer is fair game for optimization.
-- **Dev link**: `haxelib dev flxanimate <this dir>` (already linked). Engine `Project.xml` does NOT pin a version (per fork contract §6).
+- **基线**: `dev` @ `768740a`，haxelib 版本 4.0.0
+- **类型**: 纯 Haxe（无 ndll）→ 每一层都可以改。
+- **Dev 链接**: `haxelib dev flxanimate <this dir>`（已链接）。引擎 `Project.xml` 不钉版本。
 
 ## Where to add performance / capability
 | Goal | File | Hook |
