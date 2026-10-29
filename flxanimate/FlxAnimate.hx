@@ -194,9 +194,6 @@ class FlxAnimate extends FlxSprite
 	 */
 	public override function draw():Void
 	{
-		// Rainy perf: skip the expensive recursive symbol render when this sprite is
-		// off-screen for every camera it draws to. Conservative: never cull while bounds
-		// are uninitialized (width/height == 0) to avoid vanishing on the first frame.
 		if (width > 0 && height > 0 && !isOnAnyCamera())
 			return;
 
@@ -234,15 +231,16 @@ class FlxAnimate extends FlxSprite
 		}
 	}
 
-	// Rainy perf: true if the sprite's bounding box intersects at least one camera it
-	// renders to. Sprites with a custom `cameras` set are only tested against those;
-	// null `cameras` means it draws to every camera in FlxG.cameras.
-	function isOnAnyCamera():Bool {
-		var targetCams = (cameras != null && cameras.length > 0) ? cameras : FlxG.cameras.list;
-		for (cam in targetCams) {
-			if (isOnScreen(cam))
+	function isOnAnyCamera():Bool
+	{
+		var targetCams:Array<FlxCamera> = (cameras != null && cameras.length > 0) ? cameras : FlxG.cameras.list;
+
+		for (cam in targetCams)
+		{
+			if (cam != null && cam.exists && isOnScreen(cam))
 				return true;
 		}
+
 		return false;
 	}
 

@@ -21,12 +21,6 @@ Adobe Animate 导出的纹理图集播放器。读取 `Animation.json`、`Textur
 ## 安装
 
 ```bash
-haxelib dev flxanimate "D:/libs/rainy-flxanimate"
-```
-
-或者：
-
-```bash
 haxelib git flxanimate https://github.com/GengYan0/flxanimate-rainy-fork
 ```
 

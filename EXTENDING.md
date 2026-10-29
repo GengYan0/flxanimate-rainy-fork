@@ -1,19 +1,15 @@
 # EXTENDING — rainy-flxanimate
 
-- **基线**: `dev` @ `768740a`，haxelib 版本 4.0.0
-- **类型**: 纯 Haxe（无 ndll）→ 每一层都可以改。
-- **Dev 链接**: `haxelib dev flxanimate <this dir>`（已链接）。引擎 `Project.xml` 不钉版本。
+- 基线 `768740a`，haxelib 版本 4.0.0。
+- 纯 Haxe，无 ndll，每一层都可以改。
+- 引擎侧子类是 `source/rainy/flxanimate/RainyFlxAnimate.hx`，它覆盖 `draw()` 与 `destroy()`；`Project.xml` 不钉版本。
 
-## Where to add performance / capability
-| Goal | File | Hook |
+| 目标 | 文件 | 入口 |
 |---|---|---|
-| Skip render when off-screen | `flxanimate/FlxAnimate.hx` `draw()` | done (patch 01: isOnScreen early-out) |
-| Frame selection cost | `flxanimate/FlxAnimateFrames.hx`, `data/AnimationData.hx`, `animate/FlxTimeline.hx` | replace name→frame Map lookup with direct index |
-| Atlas memory | `flxanimate/frames/FlxAnimateFrames.hx` | LRU eviction for loaded atlases |
-| New effect | `flxanimate/effects/` | add `FlxXxx` + register in `FlxAnimateFilterRenderer` |
-| Engine-side cache | `source/rainy/flxanimate/PsychFlxAnimate.hx` | `animationCache` Map already caches loaded atlases |
+| 屏幕外剔除 | `flxanimate/FlxAnimate.hx` | `draw()` 开头判断是否落在任一目标相机内 |
+| 帧选择开销 | `FlxAnimateFrames.hx`、`data/AnimationData.hx`、`animate/FlxTimeline.hx` | 名字→帧的 Map 查找可换成直接索引 |
+| 图集显存 | `frames/FlxAnimateFrames.hx` | 已加载图集的 LRU 淘汰 |
+| 新滤镜 | `flxanimate/effects/` | 新增 `FlxXxx` 并在 `FlxAnimateFilterRenderer` 注册 |
+| 引擎侧图集缓存 | `source/rainy/flxanimate/RainyFlxAnimate.hx` | `animationCache` 缓存已加载图集 |
 
-## Rules
-- Keep `FlxAnimate` public signatures stable; the engine subclasses `PsychFlxAnimate` and overrides `draw()`/`destroy()`.
-- Every perf patch gets a `patches/NN-*.md` with motivation/change/verification/rollback.
-- Rendering-path changes need an in-game R2 gate (sprites must not vanish).
+`FlxAnimate` 的公开签名保持不变。
